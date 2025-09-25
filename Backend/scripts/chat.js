@@ -2,10 +2,6 @@ import 'dotenv/config';
 import OpenAI from "openai";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
-// import { PromptTemplate } from "@langchain/core/prompts";
-// import { StringOutputParser } from "@langchain/core/output_parsers";
-// import { RunnableSequence } from "@langchain/core/runnables";
-// import { formatDocumentsAsString } from "langchain/util/document";
 import PromptSync from "prompt-sync";
 
 const QDRANT_COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME;
