@@ -16,14 +16,10 @@ router.post('/', async (req, res) => {
     const sessionId = oldSessionId || uuidv4();
     const historyKey = `history:${sessionId}`;
 
-    // BEFORE: const history = await redisClient.lRange(historyKey, 0, -1);
-    // AFTER:  Use all lowercase for ioredis
     const history = await redisClient.lrange(historyKey, 0, -1);
 
     const aiResponse = await getAiResponse(question, history);
 
-    // BEFORE: await redisClient.rPush(...)
-    // AFTER:  Use all lowercase for ioredis
     await redisClient.rpush(historyKey, JSON.stringify({ role: 'user', content: question }));
     await redisClient.rpush(historyKey, JSON.stringify({ role: 'assistant', content: aiResponse }));
 
@@ -43,8 +39,6 @@ router.get('/history/:sessionId', async (req, res) => {
     const { sessionId } = req.params;
     const historyKey = `history:${sessionId}`;
     
-    // BEFORE: const history = await redisClient.lRange(historyKey, 0, -1);
-    // AFTER:  Use all lowercase for ioredis
     const history = await redisClient.lrange(historyKey, 0, -1);
 
     const parsedHistory = history.map(item => JSON.parse(item));

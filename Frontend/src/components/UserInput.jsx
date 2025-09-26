@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Send, Plus, Mic, Paperclip } from 'lucide-react';
 
-const UserInput = ({ onSendMessage, isLoading }) => {
-  const [input, setInput] = useState('');
+const UserInput = ({ onSendMessage, isLoading, input, setInput }) => {
   const textareaRef = useRef(null);
 
   const handleSubmit = () => {
     if (input.trim() && !isLoading) {
-      onSendMessage(input.trim());
-      setInput('');
+      // call parent handler (App.handleSend) — App will clear input
+      onSendMessage();
     }
   };
 
@@ -22,7 +21,8 @@ const UserInput = ({ onSendMessage, isLoading }) => {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 150) + 'px';
+      textareaRef.current.style.height =
+        Math.min(textareaRef.current.scrollHeight, 150) + 'px';
     }
   }, [input]);
 
@@ -37,7 +37,7 @@ const UserInput = ({ onSendMessage, isLoading }) => {
             >
               <Plus className="w-5 h-5" />
             </button>
-            
+
             <textarea
               ref={textareaRef}
               value={input}
@@ -48,7 +48,7 @@ const UserInput = ({ onSendMessage, isLoading }) => {
               rows={1}
               disabled={isLoading}
             />
-            
+
             <div className="flex items-center space-x-2 px-3 py-2">
               <button
                 type="button"
@@ -67,7 +67,7 @@ const UserInput = ({ onSendMessage, isLoading }) => {
                 disabled={!input.trim() || isLoading}
                 className={`p-2 rounded-lg transition-colors ${
                   input.trim() && !isLoading
-                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
                     : 'text-gray-400 cursor-not-allowed'
                 }`}
               >
