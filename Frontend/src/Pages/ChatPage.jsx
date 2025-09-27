@@ -3,13 +3,15 @@ import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import UserInput from "../components/UserInput";
 import axios from "axios";
-import { useUser } from "@clerk/clerk-react";  // ✅ to get Clerk userId
+import { useUser } from "@clerk/clerk-react";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ChatPage = () => {
   const { user } = useUser();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // for sending messages
-  const [isFetchingHistory, setIsFetchingHistory] = useState(true); // ✅ for history
+  const [isFetchingHistory, setIsFetchingHistory] = useState(true);
   const [input, setInput] = useState("");
 
   // Load chat history when userId is available
@@ -20,7 +22,7 @@ const ChatPage = () => {
       setIsFetchingHistory(true); // start loader
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/chat/history/${user.id}`
+         `${BACKEND_URL}/api/chat/history/${user.id}`
         );
 
         if (response.data?.history) {
@@ -53,9 +55,9 @@ const ChatPage = () => {
     setInput("");
 
     try {
-      const response = await axios.post("http://localhost:8080/api/chat", {
+      const response = await axios.post(`${BACKEND_URL}/api/chat`, {
         question: input,
-        userId: user.id, // ✅ send Clerk userId instead of sessionId
+        userId: user.id, 
       });
 
       const { answer } = response.data;

@@ -3,9 +3,6 @@ import OpenAI from "openai";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 
-// --- Initialize Components (outside the function for efficiency) ---
-// These are created once when the server starts, not on every API call.
-
 const openai = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"

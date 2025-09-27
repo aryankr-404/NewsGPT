@@ -18,13 +18,10 @@ router.post("/", async (req, res) => {
 
     const historyKey = `history:${userId}`;
 
-    // ✅ Only take the last 10 messages for context
     const history = await redisClient.lrange(historyKey, -1, -1);
-    console.log("this is hostory",history);
 
     const aiResponse = await getAiResponse(question, history);
 
-    // ✅ Store messages in Redis under userId
     await redisClient.rpush(
       historyKey,
       JSON.stringify({ role: "user", content: question })

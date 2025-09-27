@@ -22,13 +22,10 @@ async function emptyCollection() {
   }
 }
 
-// POST /update-news
 router.post("/", async (req, res) => {
   try {
-    // 1️⃣ Empty the collection
     await emptyCollection();
 
-    // 2️⃣ Ingest latest news
     await ingest();
 
     res.status(200).json({ message: "✅ News updated successfully." });
