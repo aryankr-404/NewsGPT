@@ -6,7 +6,6 @@ const UserInput = ({ onSendMessage, isLoading, input, setInput }) => {
 
   const handleSubmit = () => {
     if (input.trim() && !isLoading) {
-      // call parent handler (App.handleSend) — App will clear input
       onSendMessage();
     }
   };

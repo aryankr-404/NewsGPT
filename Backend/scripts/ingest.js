@@ -5,8 +5,9 @@ import { Document } from "@langchain/core/documents";
 import fetchArticles from "./news.js"; 
 
 const QDRANT_COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME;
+const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 
-async function ingest() {
+export default async function ingest() {
   try {
     // 1. Fetch articles using your existing function
     const articles = await fetchArticles();
@@ -17,7 +18,6 @@ async function ingest() {
     console.log(`✅ Fetched ${articles.length} articles.`);
 
     // 2. Create LangChain Document objects
-    // This is a crucial step for LangChain to correctly handle the data.
     const documents = articles.map(
       (article) =>
         new Document({
@@ -40,9 +40,9 @@ async function ingest() {
     });
 
     // 4. Create and store the embeddings in Qdrant
-    // The fromDocuments method handles creating the collection and embedding the documents.
     console.log("🚀 Starting ingestion into Qdrant...");
     await QdrantVectorStore.fromDocuments(documents, embeddings, {
+      apiKey: QDRANT_API_KEY,
       url: process.env.QDRANT_URL,
       collectionName: QDRANT_COLLECTION_NAME,
     });
@@ -54,4 +54,4 @@ async function ingest() {
   }
 }
 
-ingest();
+// ingest();

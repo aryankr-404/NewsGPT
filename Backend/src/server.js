@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import chatRoutes from './routes/chatRoute.js';
+import updateNews from './routes/updateNews.js'
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/api/chat', chatRoutes);
+app.use('/update-news', updateNews);
 
 app.listen(PORT, () => {
   console.log(`✅ Server is running and listening on http://localhost:${PORT}`);

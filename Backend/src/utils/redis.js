@@ -1,29 +1,23 @@
 import 'dotenv/config';
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 const REDIS_HOST_LINK = process.env.REDIS_HOST_LINK;
 const REDIS_PORT = process.env.REDIS_PORT;
 
-const client = createClient({
-    username: 'default',
-    password: REDIS_PASSWORD,
-    socket: {
-        host: REDIS_HOST_LINK,
-        port: REDIS_PORT,
-    }
+const redisClient = new Redis({
+    host: REDIS_HOST_LINK,
+    port: REDIS_PORT,
+    password: REDIS_PASSWORD
 });
 
-client.on('error', err => console.log('Redis Client Error', err));
+redisClient.on('connect', () => {
+  console.log('✅ Connected to Redis successfully');
+});
 
-async function test() {
-  await client.connect();
+redisClient.on('error', (err) => {
+  console.error('Redis connection error:', err);
+});
 
-  await client.set("foo", "bar");
-  const result = await client.get("foo");
-
-  console.log("✅ Value from Redis:", result);
-}
-
-test();
+export { redisClient };
 

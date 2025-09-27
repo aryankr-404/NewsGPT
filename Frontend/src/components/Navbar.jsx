@@ -1,23 +1,20 @@
 import React from 'react';
-import { Plus, Settings, ChevronDown } from 'lucide-react';
+import { UserButton } from '@clerk/clerk-react';
 
 const Navbar = () => {
   return (
-    <nav className="bg-gray-900 border-b border-gray-700 px-4 py-3">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-10 py-2 bg-transparent">
       <div className="flex items-center justify-between max-w-6xl mx-auto">
+        {/* Left side */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <span className="text-white font-semibold text-lg">ChatGPT</span>
-            <ChevronDown className="w-4 h-4 text-gray-400" />
+            <span className="text-white font-semibold text-lg">News RAG</span>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <button className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
-            <Plus className="w-5 h-5" />
-          </button>
-          <button className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
-            <Settings className="w-5 h-5" />
-          </button>
+
+        {/* Right side: Clerk UserButton */}
+        <div>
+          <UserButton />
         </div>
       </div>
     </nav>

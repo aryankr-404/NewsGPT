@@ -1,55 +1,62 @@
-import { Router } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { getAiResponse } from '../services/ragService.js';
-import { redisClient } from '../utils/ioredis.js';
+// ChatRoute.js
+import { Router } from "express";
+import { getAiResponse } from "../services/ragService.js";
+import { redisClient } from "../utils/redis.js";
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { question, sessionId: oldSessionId } = req.body;
+    const { question, userId } = req.body;
 
     if (!question) {
-      return res.status(400).json({ error: 'Question is required.' });
+      return res.status(400).json({ error: "Question is required." });
+    }
+    if (!userId) {
+      return res.status(400).json({ error: "UserId is required." });
     }
 
-    const sessionId = oldSessionId || uuidv4();
-    const historyKey = `history:${sessionId}`;
+    const historyKey = `history:${userId}`;
 
-    const history = await redisClient.lrange(historyKey, 0, -1);
+    // ✅ Only take the last 10 messages for context
+    const history = await redisClient.lrange(historyKey, -1, -1);
+    console.log("this is hostory",history);
 
     const aiResponse = await getAiResponse(question, history);
 
-    await redisClient.rpush(historyKey, JSON.stringify({ role: 'user', content: question }));
-    await redisClient.rpush(historyKey, JSON.stringify({ role: 'assistant', content: aiResponse }));
+    // ✅ Store messages in Redis under userId
+    await redisClient.rpush(
+      historyKey,
+      JSON.stringify({ role: "user", content: question })
+    );
+    await redisClient.rpush(
+      historyKey,
+      JSON.stringify({ role: "assistant", content: aiResponse })
+    );
 
     res.json({
       answer: aiResponse,
-      sessionId: sessionId,
+      userId: userId,
     });
-
   } catch (error) {
-    console.error('Error in POST /chat route:', error);
-    res.status(500).json({ error: 'An internal server error occurred.' });
+    console.error("Error in POST /chat route:", error);
+    res.status(500).json({ error: "An internal server error occurred." });
   }
 });
 
-router.get('/history/:sessionId', async (req, res) => {
+router.get("/history/:userId", async (req, res) => {
   try {
-    const { sessionId } = req.params;
-    const historyKey = `history:${sessionId}`;
-    
-    const history = await redisClient.lrange(historyKey, 0, -1);
+    const { userId } = req.params;
+    const historyKey = `history:${userId}`;
 
-    const parsedHistory = history.map(item => JSON.parse(item));
+    const history = await redisClient.lrange(historyKey, 0, -1);
+    const parsedHistory = history.map((item) => JSON.parse(item));
 
     res.json({ history: parsedHistory });
-
   } catch (error) {
-    console.error('Error in GET /history/:sessionId route:', error);
-    res.status(500).json({ error: 'An internal server error occurred.' });
+    console.error("Error in GET /history/:userId route:", error);
+    res.status(500).json({ error: "An internal server error occurred." });
   }
 });
 
 export default router;
-

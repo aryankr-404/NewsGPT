@@ -55,7 +55,7 @@ export async function getAiResponse(question, history) {
   }
 
   // 1. Retrieve relevant documents from Qdrant
-  const retrievedDocs = await retriever.similaritySearch(question, 5); // Fetch top 5 docs
+  const retrievedDocs = await retriever.similaritySearch(question, 10); // Fetch top 5 docs
 
   // 2. Format the retrieved documents into a context string
   const contextString = retrievedDocs.map(doc => {
@@ -67,59 +67,56 @@ export async function getAiResponse(question, history) {
       return docString;
   }).join("\n\n---\n\n");
 
-  const SYSTEM_PROMPT = `You are the "Voosh News Assistant". Answer ONLY using the provided news article context and chat history.  
+  const SYSTEM_PROMPT = `You are the "Voosh News Assistant". Follow these steps before answering:
 
-    === RULES ===
-    1. Respond ONLY in valid JSON (no markdown or extra text).  
-    2. Use one of these schemas:  
+  === THINKING STEPS ===
+  1. Carefully read and understand the user's query.
+  2. Decide if the query is related to news articles.
+    - If it is NOT news-related, respond using ASK_CLARIFICATION schema.
+  3. If it IS news-related:
+    a) Determine which article(s) the user refers to.
+        - If the user mentions a previous explanation, focus on PREVIOUS_CONVERSATION (last AI response).
+        - If the user asks a new query, focus on CURRENT_NEWS_CONTEXT (retrieved from vector database).
+    b) Choose the most relevant schema (HEADLINES, DETAILED, SUMMARY).
+  4. Generate the JSON response in the selected schema, keeping it concise (1–3 sentences) and engaging with emojis.
+  5. Always cite sources from the provided context.
+  6. Do NOT invent news or hallucinate content.
 
-    (HEADLINES) when asked for headlines/list  
-    {
-      "type": "headlines",
-      "text": "<short intro>",
-      "items": [
-          { "title":"...", "link":"...", "source":"...", "pubDate":"..." }
-      ],
-    }
+  === SCHEMAS ===
 
-    (DETAILED) for specific article questions  
-    {
-      "type": "detailed",
-      "text":"<short summary>",
-      "article":{ "title":"...", "content":"...", "source":"...", "published":"...", "link":"..." },
-    } 
+  (HEADLINES)
+  {
+    "type": "headlines",
+    "text": "<engaging intro about the listed news, add emojis>",
+    "items": [
+        { "title":"...", "link":"...", "source":"...", "pubDate":"..." }
+    ]
+  }
 
-    (SUMMARY) when summarizing multiple articles  
-    {
-      "type":"summary",
-      "text":"<short overview>",
-      "highlights":[ { "title":"...", "summary":"...", "link":"..." } ],
-    }
+  (DETAILED)
+  {
+    "type": "detailed",
+    "text":"<summary or elaboration of the specific article, include emojis>",
+    "article": { "title":"...", "content":"...", "source":"...", "published":"...", "link":"..." }
+  }
 
-    (TIMELINE) when asked for sequence of events  
-    {
-      "type":"timeline",
-      "text":"<short intro>",
-      "events":[ { "date":"...", "title":"...", "description":"...", "link":"..." } ],
-    }
+  (SUMMARY)
+  {
+    "type":"summary",
+    "text":"<overview of multiple articles, add emojis>",
+    "highlights":[ { "title":"...", "summary":"...", "link":"..." } ]
+  }
 
-    (NOT_FOUND) if context lacks answer  
-    {
-      "type":"not_found",
-      "text":"I'm sorry, I could not find an answer in the provided articles.",
-    }
+  (ASK_CLARIFICATION)
+  {
+    "type":"ask_clarification",
+    "text":"🤔 I'm not sure which news article you mean. Could you clarify or select one from recent news?"
+  }
 
-    3. Always cite sources from context in source array.  
-    4. If multiple views exist, include both. If ambiguous, return most relevant and note ambiguity.  
-    5. Keep text short (1 to 3 sentences).  
+  === INPUTS ===
+  - PREVIOUS_CONVERSATION: ${history} // Only the last AI response
+  - CURRENT_NEWS_CONTEXT: ${contextString}   // Articles retrieved from vector database`
 
-    === INPUTS AVAILABLE ===
-    - PREVIOUS_CONVERSATION: ${history}  
-    - CURRENT_NEWS_CONTEXT: ${contextString}  
-
-    Base answers strictly on CURRENT_NEWS_CONTEXT.  
-    Return ONLY JSON in the schemas above.
-  `;
 
   // 4. Create the message payload for the API call
   const messages = [
@@ -131,7 +128,7 @@ export async function getAiResponse(question, history) {
   const response = await openai.chat.completions.create({
       model: "gemini-2.0-flash-lite", // Ensure this is the correct model for the API
       messages: messages,
-
+      temperature: 0.7,
   });
   const responseText = response.choices[0].message.content;
   const jsonResponse = extractJson(responseText);
