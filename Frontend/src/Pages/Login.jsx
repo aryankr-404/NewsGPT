@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const Login = () => {
   const { isSignedIn } = useUser();
@@ -19,9 +20,11 @@ const Login = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="h-screen flex items-center justify-center bg-gray-900 text-white">
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-6">Welcome</h1>
+        <h1 className="text-3xl font-bold mb-6">Welcome to NewsGPT</h1>
 
         {/* If user is not signed in -> show SignIn button */}
         <SignedOut>
@@ -41,6 +44,7 @@ const Login = () => {
         </SignedIn>
       </div>
     </div>
+    </>
   );
 };
 
