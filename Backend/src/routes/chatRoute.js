@@ -30,6 +30,7 @@ router.post("/", async (req, res) => {
       historyKey,
       JSON.stringify({ role: "assistant", content: aiResponse })
     );
+    await redisClient.expire(historyKey, 86400);
 
     res.json({
       answer: aiResponse,

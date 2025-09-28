@@ -1,21 +1,23 @@
 import Parser from "rss-parser";
+import striptags from "striptags";
+
 const parser = new Parser();
 
 export default async function fetchArticles() {
   try {
-    console.log("Fetching BBC feed...");
-    const feed = await parser.parseURL("http://feeds.bbci.co.uk/news/world/rss.xml");
+    console.log("Fetching News feed...");
+    const feed = await parser.parseURL("https://www.theguardian.com/world/rss");
 
     if (feed?.items) {
-      const articles = feed.items.slice(0, 40).map(item => ({
-        source: "BBC",
+      const articles = feed.items.slice(0, 50).map(item => ({
+        source: "The Guardian",
         title: item.title ?? "No Title",
-        description: item.contentSnippet ?? item.description ?? "",
+        description: striptags(item.content) ?? item.description ?? "",
         link: item.link ?? "",
         pubDate: item.pubDate ?? "",
       }));
 
-      console.log(`✅ Successfully fetched and normalized ${articles.length} articles from BBC.`);
+      console.log(`✅ Successfully fetched and normalized ${articles.length} articles from The Guardian.`);
       return articles;
     } else {
       console.warn("⚠️ BBC feed did not return any items.");
@@ -26,3 +28,5 @@ export default async function fetchArticles() {
     return [];
   }
 }
+
+// fetchArticles();

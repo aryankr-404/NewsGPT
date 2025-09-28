@@ -22,7 +22,7 @@ export default async function ingest() {
       (article) =>
         new Document({
           // The pageContent is what gets embedded into a vector
-          pageContent: `${article.title}\n\n${article.description}`,
+          pageContent: `${article.description}`,
           // The metadata is stored alongside the vector
           metadata: {
             source: article.source,
@@ -54,4 +54,4 @@ export default async function ingest() {
   }
 }
 
-// ingest();
+ingest();

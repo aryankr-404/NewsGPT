@@ -62,7 +62,7 @@ const Message = ({ message, isUser }) => {
         return <p>{content.text}</p>;
 
       default:
-        return <p>⚠️ Unknown response type</p>;
+        return <p>⚠️ Unable to serve your request!</p>;
     }
   };
 

@@ -52,7 +52,7 @@ export async function getAiResponse(question, history) {
   }
 
   // 1. Retrieve relevant documents from Qdrant
-  const retrievedDocs = await retriever.similaritySearch(question, 10); // Fetch top 5 docs
+  const retrievedDocs = await retriever.similaritySearch(question, 5); // Fetch top 5 docs
 
   // 2. Format the retrieved documents into a context string
   const contextString = retrievedDocs.map(doc => {
@@ -128,7 +128,10 @@ export async function getAiResponse(question, history) {
       temperature: 0.7,
   });
   const responseText = response.choices[0].message.content;
+  // console.log(responseText);
   const jsonResponse = extractJson(responseText);
-  return jsonResponse;
+  console.log(jsonResponse);
+  // return jsonResponse;
+
 }
 
