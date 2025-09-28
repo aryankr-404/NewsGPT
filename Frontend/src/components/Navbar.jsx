@@ -3,12 +3,19 @@ import { UserButton } from '@clerk/clerk-react';
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-10 py-2 bg-transparent">
+    <nav
+      className="
+        fixed top-0 left-0 right-0 z-50 px-6 sm:px-10 py-2 lg:bg-transparent
+      md:bg-black md:backdrop-blur-none 
+      transition-colors duration-200
+      "
+      aria-label="Main navigation"
+    >
       <div className="flex items-center justify-between max-w-6xl mx-auto">
         {/* Left side */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <span className="text-white font-semibold text-lg">News RAG</span>
+            <span className="text-white font-semibold text-lg">NewsGPT</span>
           </div>
         </div>
 
@@ -22,3 +29,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

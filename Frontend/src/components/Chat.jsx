@@ -39,13 +39,44 @@ const Chat = ({ messages = [], isLoading = false }) => {
   }, [messages, isLoading]);
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gray-900" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-      <style dangerouslySetInnerHTML={{ __html: `.flex-1::-webkit-scrollbar { display: none; }` }} />
+    <div
+      className="flex-1 overflow-y-auto bg-gray-900"
+      style={{
+        scrollbarWidth: 'none', /* Firefox */
+        msOverflowStyle: 'none' /* IE and Edge */
+      }}
+    >
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .flex-1::-webkit-scrollbar {
+            display: none;
+          }
+        `
+      }} />
       <div className="max-w-4xl mx-auto px-4 py-8">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center py-20">
-            <h1 className="text-4xl font-bold text-white mb-4">What are you working on?</h1>
-            <p className="text-gray-400 text-lg">Ask anything...</p>
+          // ——— Updated empty state UI (in-line with background, not a detached box) ———
+          <div className="flex flex-col items-start justify-center h-full text-left py-20">
+            <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-tight mb-4">
+              NewsGPT
+            </h1>
+            <p className="text-gray-400 text-lg max-w-2xl mb-6">
+              Ask for headlines, summaries, timelines, or article links — NewsGPT fetches the latest sourced articles and replies with clear, emoji-friendly answers.
+            </p>
+
+            <div className="flex flex-wrap gap-3">
+              {/* Suggested queries as subtle chips */}
+              <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-full text-sm transition">
+                📰 Give me top headlines
+              </button>
+              <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-full text-sm transition">
+                🔍 Link for the BBC article
+              </button>
+              <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-full text-sm transition">
+                ✍️ Summarize latest tech news
+              </button>
+            </div>
+
           </div>
         ) : (
           <div className="space-y-6">
