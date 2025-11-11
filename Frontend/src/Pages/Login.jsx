@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { Newspaper, Sparkles, Clock, Globe } from "lucide-react";
 
 const Login = () => {

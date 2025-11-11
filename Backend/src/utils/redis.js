@@ -19,5 +19,9 @@ redisClient.on('error', (err) => {
   console.error('Redis connection error:', err);
 });
 
+// await redisClient.set("greeting", "Hello Aryan!");
+// const value = await redisClient.get("greeting");
+// console.log("📦 Retrieved value:", value);
+
 export { redisClient };
 

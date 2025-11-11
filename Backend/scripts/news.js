@@ -20,11 +20,11 @@ export default async function fetchArticles() {
       console.log(`✅ Successfully fetched and normalized ${articles.length} articles from The Guardian.`);
       return articles;
     } else {
-      console.warn("⚠️ BBC feed did not return any items.");
+      console.warn("⚠️ The Guardian feed did not return any items.");
       return [];
     }
   } catch (error) {
-    console.error("❌ Error fetching the BBC feed:", error);
+    console.error("❌ Error fetching the The Guardian feed:", error);
     return [];
   }
 }

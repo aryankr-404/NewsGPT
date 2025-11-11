@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
-import { User, Bot } from 'lucide-react';
-import Message from './Message';
+import React, { useRef, useEffect } from "react";
+import { User, Bot } from "lucide-react";
+import Message from "./Message";
 
 const TypingIndicator = () => (
   <div className="bg-gray-800 px-3 py-2 rounded-2xl">
@@ -35,25 +35,27 @@ const Chat = ({ messages = [], isLoading = false }) => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
   return (
     <div
       className="flex-1 overflow-y-auto bg-gray-900"
       style={{
-        scrollbarWidth: 'none', /* Firefox */
-        msOverflowStyle: 'none' /* IE and Edge */
+        scrollbarWidth: "none" /* Firefox */,
+        msOverflowStyle: "none" /* IE and Edge */,
       }}
     >
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           .flex-1::-webkit-scrollbar {
             display: none;
           }
-        `
-      }} />
-      <div className="max-w-4xl mx-auto px-4 py-8">
+        `,
+        }}
+      />
+      <div className="max-w-5xl mx-auto px-4 py-8">
         {messages.length === 0 ? (
           // ——— Updated empty state UI (in-line with background, not a detached box) ———
           <div className="flex flex-col items-start justify-center h-full text-left py-20">
@@ -61,7 +63,9 @@ const Chat = ({ messages = [], isLoading = false }) => {
               NewsGPT
             </h1>
             <p className="text-gray-400 text-lg max-w-2xl mb-6">
-              Ask for headlines, summaries, timelines, or article links — NewsGPT fetches the latest sourced articles and replies with clear, emoji-friendly answers.
+              Ask for headlines, summaries, timelines, or article links —
+              NewsGPT fetches the latest sourced articles and replies with
+              clear, emoji-friendly answers.
             </p>
 
             <div className="flex flex-wrap gap-3">
@@ -76,14 +80,18 @@ const Chat = ({ messages = [], isLoading = false }) => {
                 ✍️ Summarize latest tech news
               </button>
             </div>
-
           </div>
         ) : (
           <div className="space-y-6">
             {messages.map((msg, index) => {
-              const isUser = msg.role === 'user';
+              const isUser = msg.role === "user";
               return (
-                <div key={index} className={`flex items-end ${isUser ? 'justify-end' : 'justify-start'}`}>
+                <div
+                  key={index}
+                  className={`flex items-end ${
+                    isUser ? "justify-end" : "justify-start"
+                  }`}
+                >
                   {!isUser && (
                     <div className="mr-3">
                       <Bot className="w-6 h-6 text-green-400" />

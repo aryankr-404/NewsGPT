@@ -22,7 +22,7 @@ const ChatPage = () => {
       setIsFetchingHistory(true); // start loader
       try {
         const response = await axios.get(
-         `${BACKEND_URL}/api/chat/history/${user.id}`
+          `${BACKEND_URL}/api/chat/history/${user.id}`
         );
 
         if (response.data?.history) {
@@ -57,12 +57,11 @@ const ChatPage = () => {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/chat`, {
         question: input,
-        userId: user.id, 
+        userId: user.id,
       });
 
       const { answer } = response.data;
       setMessages((prev) => [...prev, { role: "assistant", content: answer }]);
-      
     } catch (error) {
       console.error("Error calling backend:", error);
       setMessages((prev) => [
@@ -74,16 +73,20 @@ const ChatPage = () => {
     setIsLoading(false);
   };
 
+  // Note: update-news is now triggered from the Navbar refresh button.
+
   return (
     <div className="h-screen bg-gray-900 flex flex-col">
       <Navbar />
       <Chat messages={messages} isLoading={isLoading} />
-      <UserInput
-        onSendMessage={handleSend}
-        input={input}
-        setInput={setInput}
-        isLoading={isLoading}
-      />
+      <div className="flex justify-center w-full">
+        <UserInput
+          onSendMessage={handleSend}
+          input={input}
+          setInput={setInput}
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   );
 };
